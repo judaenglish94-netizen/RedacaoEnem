@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caderno ENEM - Treino de Redação</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --desk-wood: #5c3a21;
+            --desk-wood-dark: #3d2312;
+            --paper-bg: #fdfdfd;
+            --line-blue: #b0c4de;
+            --margin-red: #ff8b8b;
+            --ink-black: #1a1a1a;
+            --panel-bg: #ffffff;
+            --accent-color: #2e7d32;
+            --accent-hover: #1b5e20;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle, #6e472a 0%, #3d2312 100%);
+            background-color: var(--desk-wood);
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .timer-badge {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4caf50;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sound-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .sound-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .sound-toggle-btn.muted {
+            background: rgba(220, 53, 69, 0.3);
+            border-color: rgba(220, 53, 69, 0.5);
+        }
+
+        /* TELA 1: BOAS-VINDAS (LANDING) */
+        .landing-screen {
+            max-width: 900px;
+            margin: 3rem auto;
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .landing-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .disclaimer-box {
+            background: #fff8e1;
+            border-left: 5px solid #ffa000;
+            padding: 1rem 1.2rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #5d4037;
+        }
+
+        .competencies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+
+        .comp-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.2rem;
+        }
+
+        .comp-card h3 {
+            font-size: 1rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .comp-card p {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .btn-start {
+            background: var(--accent-color);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            display: block;
+            margin: 2rem auto 0;
+            box-shadow: 0 6px 18px rgba(46, 125, 50, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-start:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* TELA 2: ÁREA DE DIGITAÇÃO DO CADERNO */
+        .editor-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .notebook-wrapper {
+            position: relative;
+            background: var(--paper-bg);
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            min-height: 1050px;
+            padding: 40px 20px 40px 60px;
+        }
+
+        .spiral {
+            position: absolute;
+            left: 15px;
+            top: 20px;
+            bottom: 20px;
+            width: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            z-index: 10;
+        }
+
+        .spiral-ring {
+            width: 25px;
+            height: 10px;
+            background: linear-gradient(90deg, #888, #eee, #666);
+            border-radius: 5px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            margin-left: -10px;
+        }
+
+        .margin-line {
+            position: absolute;
+            left: 90px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--margin-red);
+            z-index: 2;
+        }
+
+        .line-numbers {
+            position: absolute;
+            left: 55px;
+            top: 60px;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Comic Neue', cursive;
+            font-size: 16px;
+            color: #888;
+            user-select: none;
+        }
+
+        .line-number {
+            height: 32px;
+            line-height: 32px;
+            text-align: right;
+            padding-right: 8px;
+        }
+
+        .paper-content {
+            margin-left: 40px;
+            position: relative;
+        }
+
+        .title-input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid var(--line-blue);
+            background: transparent;
+            font-family: 'Comic Neue', cursive;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--ink-black);
+            padding: 5px 0;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .essay-textarea {
+            width: 100%;
+            height: 960px;
+            border: none;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 31px,
+                var(--line-blue) 31px,
+                var(--line-blue) 32px
+            );
+            font-family: 'Comic Neue', cursive;
+            font-size: 19px;
+            line-height: 32px;
+            color: var(--ink-black);
+            resize: none;
+            outline: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .editor-bottom-bar {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .editor-counter {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        /* TELA 3: PÁGINA DE RESULTADOS & EXPORTAÇÃO */
+        .results-page {
+            display: none;
+            max-width: 1100px;
+            margin: 2rem auto;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .results-header h2 {
+            color: #2c3e50;
+            font-size: 1.6rem;
+        }
+
+        .mode-selector-large {
+            display: flex;
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 4px;
+            gap: 4px;
+            max-width: 650px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .mode-btn-large {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            color: #495057;
+            transition: all 0.2s;
+        }
+
+        .mode-btn-large.active {
+            background: white;
+            color: var(--accent-color);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .pdf-render-area {
+            background: #ffffff !important;
+            color: #1a1a1a !important;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .pdf-section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .student-text-preview {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.1rem;
+            line-height: 2;
+            color: var(--ink-black);
+            background: #fdfdfd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #b0c4de;
+            white-space: pre-wrap;
+        }
+
+        .paragraph-comparison {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.2rem;
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+            page-break-inside: avoid;
+        }
+
+        .paragraph-header {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+        }
+
+        .text-box {
+            margin-bottom: 0.8rem;
+            padding: 1rem;
+            border-radius: 6px;
+            line-height: 1.6;
+        }
+
+        .original-text {
+            background: #fff8e1;
+            border-left: 5px solid #ffa000;
+            color: #2c3e50;
+        }
+
+        .original-text mark.error {
+            background: #ffcdd2;
+            color: #b71c1c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .original-text span.fix {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-left: 4px;
+        }
+
+        .ideal-text {
+            background: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            color: #1b5e20;
+        }
+
+        .error-explanation-list {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .error-explanation-list h4 {
+            color: #c62828;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .error-explanation-list ul {
+            padding-left: 1.2rem;
+        }
+
+        .error-explanation-list li {
+            margin-bottom: 0.3rem;
+            color: #424242;
+        }
+
+        .profanity-alert {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .time-card {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            padding: 1rem;
+            border-radius: 8px;
+            color: #0d47a1;
+            margin-bottom: 1rem;
+        }
+
+        .download-panel {
+            background: #f8f9fa;
+            border: 2px dashed #b0c4de;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .download-panel h3 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .download-buttons-grid {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-download {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.4rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #1565c0;
+        }
+
+        .btn-download.accent {
+            background: var(--accent-color);
+        }
+
+        .btn-download.accent:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        @media (max-width: 900px) {
+            .download-buttons-grid {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="location.reload()">
+            📝 Caderno ENEM
+        </div>
+        <div class="header-controls">
+            <div class="timer-badge" id="timerBadge">
+                ⏱️ 00:00:00
+            </div>
+            <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleSound()">
+                🔊 Som do Lápis: LIGADO
+            </button>
+        </div>
+    </header>
+
+    <!-- TELA 1: BOAS-VINDAS E ORIENTAÇÕES -->
+    <div class="landing-screen" id="landingScreen">
+        <h1 class="landing-title">Treino Estruturado de Redação ENEM</h1>
+        
+        <div class="disclaimer-box">
+            📌 <strong>Objetivo da Ferramenta:</strong> Esta plataforma serve para auxiliar o aluno na preparação, verificação de limites e pré-revisão gramatical de sua redação antes de enviá-la ao avaliador/professor da escola. <strong>Esta ferramenta não substitui o papel do professor ou avaliador humano.</strong>
+        </div>
+
+        <p style="margin-bottom: 1rem; color: #555; line-height: 1.6;">
+            Nosso exercício prioriza com rigor as <strong>Competências 1, 2 e 4</strong> por possuírem critérios mais sistemáticos e objetivos de correção. Para que você receba uma nota global precisa (até 1.000 pontos), aplicamos métodos rigorosos para diagnosticar o Projeto de Texto (C3) e a Proposta de Intervenção (C5).
+        </p>
+
+        <div class="competencies-grid">
+            <div class="comp-card">
+                <h3>Competência 1 (Ênfase)</h3>
+                <p>Norma culta, concordância, ortografia, pontuação, acentuação e estrutura sintática.</p>
+            </div>
+            <div class="comp-card">
+                <h3>Competência 2 (Ênfase)</h3>
+                <p>Compreensão do tema, tipo dissertativo e uso produtivo de repertório sociocultural.</p>
+            </div>
+            <div class="comp-card">
+                <h3>Competência 3 (Diagnóstico)</h3>
+                <p>Verificação da coerência, seleção e projeto de texto (organização dos argumentos).</p>
+            </div>
+            <div class="comp-card">
+                <h3>Competência 4 (Ênfase)</h3>
+                <p>Coesão textual, operadores interparágrafos, repertório de conectivos e coesão interna.</p>
+            </div>
+            <div class="comp-card" style="grid-column: span 2;">
+                <h3>Competência 5 (Diagnóstico de 5 Elementos)</h3>
+                <p>Análise dos 5 elementos obrigatórios: Agente, Ação, Meio/Modo, Efeito e Detalhamento com respeito aos Direitos Humanos.</p>
+            </div>
+        </div>
+
+        <button class="btn-start" onclick="startWriting()">✍️ Fazer Redação</button>
+    </div>
+
+    <!-- TELA 2: ÁREA DE DIGITAÇÃO DO CADERNO -->
+    <div class="editor-container" id="editorContainer">
+        <div class="notebook-wrapper">
+            <div class="spiral">
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+                <div class="spiral-ring"></div>
+            </div>
+
+            <div class="margin-line"></div>
+            <div class="line-numbers" id="lineNumbers"></div>
+
+            <div class="paper-content">
+                <input type="text" class="title-input" placeholder="Título da Redação (Opcional)" id="titleInput">
+                <textarea class="essay-textarea" id="essayText" placeholder="Digite seu texto aqui... O som do lápis riscando acompanhará sua escrita no título e corpo."></textarea>
+            </div>
+        </div>
+
+        <div class="editor-bottom-bar">
+            <div class="editor-counter">
+                Linhas (Est.): <strong id="lineCountDisplay" style="color: var(--accent-color);">0 / 30</strong> | Palavras: <strong id="wordCountDisplay">0</strong>
+            </div>
+            <button class="btn btn-secondary" onclick="clearNotebook()">🗑️ Limpar</button>
+            <button class="btn" onclick="finishEssayAndGoToResults()">🏁 Finalizar & Ver Feedback</button>
+        </div>
+    </div>
+
+    <!-- TELA 3: PÁGINA DE FEEDBACK E DOWNLOAD DE PDF -->
+    <div class="results-page" id="resultsPage">
+        <div class="results-header">
+            <h2>📊 Relatório de Desempenho & Feedback</h2>
+            <button class="btn btn-secondary" onclick="backToEditor()">✏️ Voltar ao Caderno</button>
+        </div>
+
+        <div>
+            <p style="text-align: center; margin-bottom: 0.5rem; font-weight: 600; color: #555;">Selecione o modo de visualização do feedback:</p>
+            <div class="mode-selector-large">
+                <button class="mode-btn-large active" id="btnModeGeneral" onclick="setFeedbackMode('general')">Visão Geral (Notas)</button>
+                <button class="mode-btn-large" id="btnModeSingle" onclick="setFeedbackMode('single')">Último Parágrafo</button>
+                <button class="mode-btn-large" id="btnModeParagraphs" onclick="setFeedbackMode('paragraphs')">Correção por Parágrafos</button>
+            </div>
+        </div>
+
+        <div id="pdfContentCombined" style="background: #ffffff; padding: 10px; border-radius: 8px;">
+            <div class="pdf-render-area" id="pdfSectionText" style="margin-bottom: 1.5rem;">
+                <h3 class="pdf-section-title">📄 Redação do Aluno</h3>
+                <div style="margin-bottom: 0.5rem; font-weight: bold; color: #333;" id="displayTitle"></div>
+                <div class="student-text-preview" id="displayText"></div>
+            </div>
+
+            <div class="pdf-render-area" id="pdfSectionFeedback">
+                <h3 class="pdf-section-title">🔍 Análise Detalhada, Desvios & Reescrita Ideal</h3>
+                <div id="feedbackOutput"></div>
+            </div>
+        </div>
+
+        <div class="download-panel">
+            <h3>📥 Baixar Relatório em PDF</h3>
+            <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">Escolha como prefere fazer o download dos arquivos em formato PDF:</p>
+            <div class="download-buttons-grid">
+                <button class="btn-download" onclick="downloadPDF('text')">📄 Baixar Apenas Redação</button>
+                <button class="btn-download" onclick="downloadPDF('feedback')">🔍 Baixar Apenas Feedback</button>
+                <button class="btn-download accent" onclick="downloadPDF('combined')">📚 Baixar Arquivo Completo (Tudo)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const lineNumbersContainer = document.getElementById('lineNumbers');
+        for (let i = 1; i <= 30; i++) {
+            const div = document.createElement('div');
+            div.className = 'line-number';
+            div.textContent = i;
+            lineNumbersContainer.appendChild(div);
+        }
+
+        const titleInput = document.getElementById('titleInput');
+        const essayText = document.getElementById('essayText');
+        const lineCountDisplay = document.getElementById('lineCountDisplay');
+        const wordCountDisplay = document.getElementById('wordCountDisplay');
+        const timerBadge = document.getElementById('timerBadge');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+
+        let soundEnabled = true;
+        let activeFeedbackMode = 'general';
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let audioCtx = null;
+
+        function startWriting() {
+            document.getElementById('landingScreen').style.display = 'none';
+            document.getElementById('editorContainer').style.display = 'flex';
+            startTimer();
+        }
+
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(() => {
+                    timerSeconds++;
+                    const hrs = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+                    const mins = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+                    const secs = String(timerSeconds % 60).padStart(2, '0');
+                    timerBadge.textContent = "⏱️ " + hrs + ":" + mins + ":" + secs;
+                }, 1000);
+            }
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playPencilScratch() {
+            if (!soundEnabled) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const duration = 0.05;
+            const sampleRate = audioCtx.sampleRate;
+            const bufferSize = sampleRate * duration;
+            const buffer = audioCtx.createBuffer(1, bufferSize, sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+            }
+
+            const noiseSource = audioCtx.createBufferSource();
+            noiseSource.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2000 + Math.random() * 1000, audioCtx.currentTime);
+            filter.Q.setValueAtTime(2.5, audioCtx.currentTime);
+
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
+
+            noiseSource.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            noiseSource.start();
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundToggleBtn.textContent = '🔊 Som do Lápis: LIGADO';
+                soundToggleBtn.classList.remove('muted');
+            } else {
+                soundToggleBtn.textContent = '🔇 Som do Lápis: MUTADO';
+                soundToggleBtn.classList.add('muted');
+            }
+        }
+
+        [titleInput, essayText].forEach(el => {
+            el.addEventListener('keydown', (e) => {
+                if (['Shift', 'Control', 'Alt', 'CapsLock', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+                playPencilScratch();
+            });
+        });
+
+        function calculateEstimatedLines(text) {
+            if (!text.trim()) return 0;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const paragraphBreaks = text.split('\n').length - 1;
+            const linesByWords = Math.ceil(words / 11);
+            return Math.max(linesByWords, paragraphBreaks + 1);
+        }
+
+        essayText.addEventListener('input', () => {
+            const words = essayText.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const estimatedLines = calculateEstimatedLines(essayText.value);
+            
+            lineCountDisplay.textContent = estimatedLines + " / 30";
+            wordCountDisplay.textContent = words;
+
+            if (estimatedLines > 30) {
+                lineCountDisplay.style.color = '#dc3545';
+            } else {
+                lineCountDisplay.style.color = 'var(--accent-color)';
+            }
+        });
+
+        function finishEssayAndGoToResults() {
+            const text = essayText.value.trim();
+            if (!text) {
+                alert('Digite sua redação antes de finalizar!');
+                return;
+            }
+
+            document.getElementById('editorContainer').style.display = 'none';
+            document.getElementById('resultsPage').style.display = 'flex';
+
+            document.getElementById('displayTitle').textContent = titleInput.value ? "Título: " + titleInput.value : 'Sem Título';
+            document.getElementById('displayText').textContent = text;
+
+            renderFeedback();
+        }
+
+        function backToEditor() {
+            document.getElementById('resultsPage').style.display = 'none';
+            document.getElementById('editorContainer').style.display = 'flex';
+        }
+
+        function setFeedbackMode(mode) {
+            activeFeedbackMode = mode;
+            document.getElementById('btnModeGeneral').classList.toggle('active', mode === 'general');
+            document.getElementById('btnModeSingle').classList.toggle('active', mode === 'single');
+            document.getElementById('btnModeParagraphs').classList.toggle('active', mode === 'paragraphs');
+            renderFeedback();
+        }
+
+        const profanityList = ['porra', 'caralho', 'merda', 'puta', 'bosta', 'cacete', 'foder', 'puta que pariu', 'desgraça'];
+
+        // Regras de detecção gramatical, coesiva e sintática
+        const grammarRules = [
+            { pattern: /\bhouveram\b/gi, err: "houveram", fix: "houve", note: "O verbo 'haver' no sentido de existir é impessoal e deve ficar no singular." },
+            { pattern: /\bhouverem\b/gi, err: "houverem", fix: "houver", note: "O verbo 'haver' impessoal não se flexiona no plural." },
+            { pattern: /\bfazem (\d+) (anos|meses|dias)\b/gi, err: "fazem", fix: "faz", note: "O verbo 'fazer' indicando tempo decorrido é impessoal (fica no singular)." },
+            { pattern: /\bteram\b/gi, err: "teram", fix: "terão", note: "Grafia incorreta para o futuro do presente do verbo ter." },
+            { pattern: /\bviram\b/gi, err: "viram", fix: "virão", note: "Atenção à terminação: '-am' indica passado (eles viram) e '-ão' indica futuro (eles virão)." },
+            { pattern: /\bna onde\b/gi, err: "na onde", fix: "onde / em que", note: "Uso inadequado de expressão coloquial. Utilize 'onde' para lugares físicos ou 'em que'." },
+            { pattern: /\bafim de\b/gi, err: "afim de", fix: "a fim de", note: "'A fim de' (separado) indica finalidade/propósito. 'Afim' (junto) indica afinidade." },
+            { pattern: /\bpor causa que\b/gi, err: "por causa que", fix: "visto que / já que", note: "Substitua por conectivo explicativo/causal formal da norma culta." },
+            { pattern: /\bpara mim fazer\b/gi, err: "para mim fazer", fix: "para eu fazer", note: "'Mim' não faz ação/não é sujeito de verbo no infinitivo. Use 'eu'." },
+            { pattern: /\bpara mim ir\b/gi, err: "para mim ir", fix: "para eu ir", note: "Pronome reto 'eu' deve ser o sujeito de verbos no infinitivo." },
+            { pattern: /\bmenas\b/gi, err: "menas", fix: "menos", note: "'Menos' é palavra invariável. A forma 'menas' não existe na norma padrão." },
+            { pattern: /\bhá (.*?) atrás\b/gi, err: "há ... atrás", fix: "há ... / ... atrás", note: "Pleonasmo: 'há' já indica tempo decorrido no passado, tornando 'atrás' redundante." }
+        ];
+
+        function analyzeParagraph(text) {
+            let annotatedHtml = text;
+            let detectedNotes = [];
+
+            grammarRules.forEach(rule => {
+                if (rule.pattern.test(text)) {
+                    detectedNotes.push(`<strong>${rule.err}</strong> → <em>${rule.fix}</em>: ${rule.note}`);
+                    annotatedHtml = annotatedHtml.replace(rule.pattern, `<mark class="error">${rule.err}</mark><span class="fix">(${rule.fix})</span>`);
+                }
+            });
+
+            return { annotatedHtml, detectedNotes };
+        }
+
+        function generateIdealParagraph(para, index, total) {
+            let text = para.trim();
+
+            // Correção de desvios comuns
+            grammarRules.forEach(rule => {
+                text = text.replace(rule.pattern, rule.fix);
+            });
+
+            // Melhorias de estruturação formal do ENEM por posição no texto
+            if (index === 0) {
+                if (!text.toLowerCase().startsWith("no contexto") && !text.toLowerCase().startsWith("na obra") && !text.toLowerCase().startsWith("segundo")) {
+                    text = "Em primeira análise, no contexto contemporâneo brasileiro, " + text.charAt(0).toLowerCase() + text.slice(1);
+                }
+            } else if (index === total - 1) {
+                if (!text.toLowerCase().startsWith("portanto") && !text.toLowerCase().startsWith("infere-se")) {
+                    text = "Portanto, cabe ao Governo Federal, em parceria com os órgãos competentes, promover medidas eficazes para " + text.charAt(0).toLowerCase() + text.slice(1);
+                }
+            } else {
+                if (!['ademais', 'em primeira análise', 'em segundo lugar', 'outrossim', 'além disso'].some(c => text.toLowerCase().startsWith(c))) {
+                    text = (index === 1 ? "Em primeiro plano, " : "Ademais, ") + text.charAt(0).toLowerCase() + text.slice(1);
+                }
+            }
+            return text;
+        }
+
+        function renderFeedback() {
+            const text = essayText.value.trim();
+            const output = document.getElementById('feedbackOutput');
+            output.innerHTML = '';
+
+            const foundProfanities = profanityList.filter(w => text.toLowerCase().includes(w));
+            if (foundProfanities.length > 0) {
+                output.innerHTML = '<div class="profanity-alert">🚫 <strong>Impropério Detectado!</strong><br>Seu texto contém termos desrespeitosos (' + foundProfanities.join(', ') + '). No ENEM, isso gera <strong>Anulação Automática (Nota Zero)</strong>.</div>';
+                return;
+            }
+
+            const rawParagraphs = text.split(/\n+/).filter(p => p.trim().length > 0);
+            const totalLines = calculateEstimatedLines(text);
+            const totalMinutes = Math.max(1, Math.round(timerSeconds / 60));
+
+            let html = '<div class="time-card">⏱️ <strong>Tempo total de escrita:</strong> ' + totalMinutes + ' minutos | <strong>Linhas (Est.):</strong> ' + totalLines + ' / 30<p style="margin-top: 4px; font-size: 0.85rem;">' + getTimeFeedback(totalMinutes) + '</p></div>';
+
+            if (totalLines < 7) {
+                html += '<div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 1rem; border-radius: 6px; color: #721c24; margin-bottom: 1rem;">⚠️ <strong>Insuficiência Severa de Linhas (Nota 0):</strong><br>Seu texto possui apenas ' + totalLines + ' linha(s). O edital do ENEM anula redações com menos de 7 linhas escritas.</div>';
+            } else if (totalLines < 15) {
+                html += '<div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; border-radius: 6px; color: #856404; margin-bottom: 1rem;">⚠️ <strong>Penalização por Extensão Insuficiente:</strong><br>Com ' + totalLines + ' linhas, sua nota foi limitada por falta de desenvolvimento argumentativo completo (Teto Máximo de 80 pts por competência).</div>';
+            }
+
+            // MODO 1: VISÃO GERAL (NOTAS POR COMPETÊNCIA + SCORE TOTAL)
+            if (activeFeedbackMode === 'general') {
+                const scores = calculateScores(text, rawParagraphs, totalLines);
+                html += '<div style="background: #2c3e50; color: white; padding: 1.2rem; border-radius: 8px; text-align: center; margin-bottom: 1rem;"><div style="font-size: 0.85rem; text-transform: uppercase;">Nota Estimada Global</div><div style="font-size: 2.5rem; font-weight: 700; color: ' + (scores.total > 500 ? '#4caf50' : '#e74c3c') + ';">' + scores.total + ' / 1000</div></div><div>' + renderCompBar('Competência 1 (Norma Culta)', scores.c1) + renderCompBar('Competência 2 (Tema e Repertório)', scores.c2) + renderCompBar('Competência 3 (Projeto de Texto)', scores.c3) + renderCompBar('Competência 4 (Coesão Textual)', scores.c4) + renderCompBar('Competência 5 (Proposta Intervenção)', scores.c5) + '</div>';
+            } 
+            // MODO 2: APENAS O ÚLTIMO PARÁGRAFO
+            else if (activeFeedbackMode === 'single') {
+                const lastIdx = rawParagraphs.length - 1;
+                const lastPara = rawParagraphs[lastIdx] || "";
+                const analysis = analyzeParagraph(lastPara);
+                const idealText = generateIdealParagraph(lastPara, lastIdx, rawParagraphs.length);
+
+                html += '<div class="paragraph-comparison"><div class="paragraph-header">📌 Correção & Análise do Parágrafo Atual (Parágrafo ' + (lastIdx + 1) + ')</div>';
+                
+                if (analysis.detectedNotes.length > 0) {
+                    html += '<div class="error-explanation-list"><h4>🔍 Desvios Identificados:</h4><ul>';
+                    analysis.detectedNotes.forEach(note => { html += '<li>' + note + '</li>'; });
+                    html += '</ul></div>';
+                } else {
+                    html += '<div style="background:#e8f5e9; padding:0.6rem; border-radius:6px; color:#2e7d32; font-size:0.9rem; margin-bottom:0.8rem;">✅ Nenhum erro de concordância ou grafia severo foi identificado neste parágrafo.</div>';
+                }
+
+                html += '<div class="text-box original-text"><strong>Texto do Aluno (Erros destacados):</strong><br>' + analysis.annotatedHtml + '</div><div class="text-box ideal-text"><strong>Como o parágrafo deveria ter sido escrito (Reescrita Ideal):</strong><br>' + idealText + '</div></div>';
+            } 
+            // MODO 3: CORREÇÃO COMPLETA PARÁGRAFO POR PARÁGRAFO
+            else if (activeFeedbackMode === 'paragraphs') {
+                rawParagraphs.forEach((para, idx) => {
+                    const analysis = analyzeParagraph(para);
+                    const idealText = generateIdealParagraph(para, idx, rawParagraphs.length);
+
+                    html += '<div class="paragraph-comparison"><div class="paragraph-header">📌 Parágrafo ' + (idx + 1) + ' (' + getParagraphType(idx, rawParagraphs.length) + ')</div>';
+                    
+                    if (analysis.detectedNotes.length > 0) {
+                        html += '<div class="error-explanation-list"><h4>🔍 Desvios Identificados no Parágrafo ' + (idx + 1) + ':</h4><ul>';
+                        analysis.detectedNotes.forEach(note => { html += '<li>' + note + '</li>'; });
+                        html += '</ul></div>';
+                    } else {
+                        html += '<div style="background:#e8f5e9; padding:0.6rem; border-radius:6px; color:#2e7d32; font-size:0.9rem; margin-bottom:0.8rem;">✅ Estrutura sem erros pontuais de gramática detectados.</div>';
+                    }
+
+                    html += '<div class="text-box original-text"><strong>Texto do Aluno (Erros destacados em vermelho com sugestão):</strong><br>' + analysis.annotatedHtml + '</div><div class="text-box ideal-text"><strong>Como este parágrafo deveria ter sido escrito (Reescrita Modelo):</strong><br>' + idealText + '</div></div>';
+                });
+            }
+
+            output.innerHTML = html;
+        }
+
+        function getTimeFeedback(min) {
+            if (min < 30) return 'Concluído rapidamente. Fique atento ao planejamento argumentativo e revisão de desvios.';
+            if (min <= 90) return 'Excelente gestão de tempo! Faixa ideal para rascunho e versão final no ENEM.';
+            return 'Atenção: ultrapassar 90 minutos pode comprometer a realização das 90 questões objetivas.';
+        }
+
+        function calculateScores(text, paragraphs, lines) {
+            if (lines < 7) return { c1: 0, c2: 0, c3: 0, c4: 0, c5: 0, total: 0 };
+            let c1 = 160, c2 = 160, c3 = 160, c4 = 160, c5 = 160;
+            if (lines < 15) {
+                c1 = Math.min(c1, 80); c2 = Math.min(c2, 80); c3 = Math.min(c3, 80); c4 = Math.min(c4, 80); c5 = Math.min(c5, 80);
+            } else {
+                if (paragraphs.length >= 4) { c2 = 200; c5 = 200; }
+                if (['portanto', 'ademais', 'dessarte'].some(c => text.toLowerCase().includes(c))) c4 = 200;
+            }
+            return { c1, c2, c3, c4, c5, total: c1 + c2 + c3 + c4 + c5 };
+        }
+
+        function renderCompBar(title, score) {
+            return '<div style="font-size: 0.85rem; margin-top: 8px;"><div style="display: flex; justify-content: space-between; margin-bottom: 2px;"><span>' + title + '</span><strong>' + score + ' pts</strong></div><div style="background: #e9ecef; height: 8px; border-radius: 4px;"><div style="background: ' + (score > 100 ? 'var(--accent-color)' : '#dc3545') + '; width: ' + ((score/200)*100) + '%; height: 100%; border-radius: 4px;"></div></div></div>';
+        }
+
+        function getParagraphType(index, total) {
+            if (index === 0) return 'Introdução';
+            if (index === total - 1) return 'Conclusão';
+            return 'Desenvolvimento ' + index;
+        }
+
+        function clearNotebook() {
+            if (confirm('Deseja limpar a folha e reiniciar o tempo?')) {
+                essayText.value = ''; titleInput.value = '';
+                lineCountDisplay.textContent = '0 / 30'; wordCountDisplay.textContent = '0';
+                timerSeconds = 0;
+            }
+        }
+
+        function downloadPDF(type) {
+            let element;
+            if (type === 'text') {
+                element = document.getElementById('pdfSectionText');
+            } else if (type === 'feedback') {
+                element = document.getElementById('pdfSectionFeedback');
+            } else {
+                element = document.getElementById('pdfContentCombined');
+            }
+
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'Redacao_ENEM_' + type + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    scrollY: 0,
+                    scrollX: 0
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
