@@ -54,6 +54,8 @@
             align-items: center;
             border-bottom: 2px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            flex-wrap: wrap;
+            gap: 0.8rem;
         }
 
         .logo {
@@ -68,7 +70,27 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .menu-home-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .menu-home-btn:hover {
+            background: rgba(255, 255, 255, 0.32);
         }
 
         .timer-badge {
@@ -762,6 +784,9 @@
             📝 Caderno ENEM
         </div>
         <div class="header-controls">
+            <button class="menu-home-btn" id="menuHomeBtn" onclick="goToHome()">
+                🏠 Menu Principal
+            </button>
             <div class="timer-badge" id="timerBadge">
                 ⏱️ 00:00:00
             </div>
@@ -921,6 +946,7 @@
         const timerBadge = document.getElementById('timerBadge');
         const soundToggleBtn = document.getElementById('soundToggleBtn');
         const ocrLoadingScreen = document.getElementById('ocrLoadingScreen');
+        const menuHomeBtn = document.getElementById('menuHomeBtn');
 
         let soundEnabled = true;
         let activeFeedbackMode = 'general';
@@ -932,6 +958,7 @@
         function startWriting() {
             document.getElementById('landingScreen').style.display = 'none';
             document.getElementById('editorContainer').style.display = 'flex';
+            menuHomeBtn.style.display = 'flex';
             startTimer();
         }
 
@@ -956,6 +983,7 @@
                 
                 document.getElementById('landingScreen').style.display = 'none';
                 document.getElementById('editorContainer').style.display = 'flex';
+                menuHomeBtn.style.display = 'flex';
                 essayText.value = transcribedText;
                 enforceWordLimit();
                 startTimer();
@@ -969,6 +997,14 @@
         }
 
         function goToHome() {
+            const isEditorVisible = document.getElementById('editorContainer').style.display === 'flex';
+            const hasContent = essayText.value.trim().length > 0 || titleInput.value.trim().length > 0 || themeInput.value.trim().length > 0;
+
+            if (isEditorVisible && hasContent) {
+                const confirmed = confirm('Atenção: Se voltar ao Menu Principal agora, todo o texto escrito até aqui será perdido caso não tenha sido enviado/finalizado. Deseja continuar?');
+                if (!confirmed) return;
+            }
+
             essayText.value = '';
             titleInput.value = '';
             themeInput.value = '';
@@ -989,6 +1025,7 @@
             document.getElementById('landingScreen').style.display = 'block';
             document.getElementById('editorContainer').style.display = 'none';
             document.getElementById('resultsPage').style.display = 'none';
+            menuHomeBtn.style.display = 'none';
         }
 
         function startTimer() {
@@ -1158,6 +1195,7 @@
 
             document.getElementById('editorContainer').style.display = 'none';
             document.getElementById('resultsPage').style.display = 'flex';
+            menuHomeBtn.style.display = 'flex';
 
             document.getElementById('displayTheme').textContent = tema ? "Tema: " + tema : '';
             document.getElementById('displayTitle').textContent = titleInput.value ? "Título: " + titleInput.value : 'Sem Título';
@@ -1169,6 +1207,7 @@
         function backToEditor() {
             document.getElementById('resultsPage').style.display = 'none';
             document.getElementById('editorContainer').style.display = 'flex';
+            menuHomeBtn.style.display = 'flex';
         }
 
         function setFeedbackMode(mode) {
